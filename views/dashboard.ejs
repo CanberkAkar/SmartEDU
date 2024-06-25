@@ -3,8 +3,9 @@
 	
 	<!-- Start header -->
 <%- include('partials/_navigation') %>
+
 	<!-- End header -->
-	
+<% if(user) {%> 	
 	<div class="all-title-box">
 		<div class="container text-center">
 			<h1>Hoş Geldin<span class="m_1"><%= user.name %></span></h1>
@@ -95,5 +96,5 @@
             </div><!-- end row -->
         </div><!-- end container -->
     </div><!-- end section -->
-
+<%}%>
 <%- include('partials/_footer') %>
