@@ -3,7 +3,12 @@ const Category = require('../models/Category');
 
 exports.createCourse = async (req, res) => {
     try {
-        const course = await Course.create(req.body);
+        const course = await Course.create({
+            name:req.body.name,
+            description:req.body.name,
+            category:req.body.category,
+            user:req.session.userID
+        });
         //YENİ ELEMANDA 201 DÖNER
         res.status(201).redirect('/courses');
         } catch (error) {
