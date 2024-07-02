@@ -5,11 +5,8 @@ exports.createCourse = async (req, res) => {
     try {
         const course = await Course.create(req.body);
         //YENİ ELEMANDA 201 DÖNER
-        res.status(201).json({
-            status: 'success',
-            course
-        });
-    } catch (error) {
+        res.status(201).redirect('/courses');
+        } catch (error) {
         res.status(400).json({
             status: 'fail',
             error
