@@ -7,5 +7,6 @@ const router = express.Router();
 router.route('/').post(roleMiddleware(["teacher","admin"]),courseController.createCourse);//localhost:3000/courses eğer route'a yeni bir veri gelirse mesela '/add' gibi yolu artık /courses/add olur
 router.route('/').get(courseController.getAllCourses);
 router.route('/:slug').get(courseController.getCourse);
+router.route('/enroll').post(courseController.enrollCourese);
 
 module.exports = router;
