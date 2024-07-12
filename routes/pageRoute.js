@@ -8,5 +8,6 @@ router.route('/about').get(pageController.getAboutPage);
 router.route('/register').get(registerMiddleware,pageController.getRegisterPage);
 router.route('/login').get(registerMiddleware,pageController.getLoginPage);
 router.route('/contact').get(registerMiddleware,pageController.getContactPage);
+router.route('/contact').post(registerMiddleware,pageController.sendEmail);
 
 module.exports = router;
