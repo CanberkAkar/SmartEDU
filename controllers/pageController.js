@@ -29,6 +29,9 @@ exports.getContactPage = (req, res) => {
 }
 
 exports.sendEmail = (req, res) => {
+    try{
+
+   
    const outputMessage=`
    <h1>Mail Details </h1>
    <ul>
@@ -61,6 +64,15 @@ exports.sendEmail = (req, res) => {
   
     console.log("Message sent: %s", info.messageId);
     }
+
+    req.flash("success","We Received your message succesfully");
+
     main().catch(console.error);
     res.status(200).redirect('contact');
+    }
+    catch{
+        req.flash("error","Something happend");
+        res.status(400).redirect('contact');
+
+    }
 }

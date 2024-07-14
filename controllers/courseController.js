@@ -4,43 +4,42 @@ const User = require('../models/User');
 exports.createCourse = async (req, res) => {
     try {
         const course = await Course.create({
-            name:req.body.name,
-            description:req.body.description,
-            category:req.body.category,
-            user:req.session.userID
+            name: req.body.name,
+            description: req.body.description,
+            category: req.body.category,
+            user: req.session.userID
         });
         //YENİ ELEMANDA 201 DÖNER
+        req.flash("success", "Courses created");
         res.status(201).redirect('/courses');
-        } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            error
-        })
+    } catch (error) {
+        req.flash("error", "Something happend");
+        res.status(400).redirect('/courses');
     }
 }
 
 exports.getAllCourses = async (req, res) => {
     try {
 
-        const categorySlug  = req.query.categories;
-        const query         = req.query.search;
-        const category      = await Category.findOne({slug:categorySlug})
+        const categorySlug = req.query.categories;
+        const query = req.query.search;
+        const category = await Category.findOne({ slug: categorySlug })
 
-        let filter={};
-        if(categorySlug){
-            filter={category:category._id}
+        let filter = {};
+        if (categorySlug) {
+            filter = { category: category._id }
         }
-        if(query){
-            filter={name:query}
+        if (query) {
+            filter = { name: query }
         }
-        if(!query && !categorySlug){
-            filter.name='';
-            filter.category=null;
-        }  
-        const courses    = await Course.find({
-            $or:[
-                {name:{$regex:'.*' +filter.name +'.*',$options:'i'}},
-                {category:filter.category}
+        if (!query && !categorySlug) {
+            filter.name = '';
+            filter.category = null;
+        }
+        const courses = await Course.find({
+            $or: [
+                { name: { $regex: '.*' + filter.name + '.*', $options: 'i' } },
+                { category: filter.category }
             ]
         });
         const categories = await Category.find();
@@ -80,12 +79,12 @@ exports.getCourse = async (req, res) => {
 exports.enrollCourese = async (req, res) => {
     try {
         //işlemler sıralı şekilde olmalı o yüzden await kullanıyoruz.
-        
+
         const user = await User.findById(req.session.userID);
-        await user.courses.push({_id:req.body.course_id});
+        await user.courses.push({ _id: req.body.course_id });
         await user.save();
         res.status(200).redirect('/users/dashboard');
-      } catch (error) {
+    } catch (error) {
         res.status(400).json({
             status: 'fail',
             error
@@ -95,12 +94,12 @@ exports.enrollCourese = async (req, res) => {
 exports.releaseCourese = async (req, res) => {
     try {
         //işlemler sıralı şekilde olmalı o yüzden await kullanıyoruz.
-        
+
         const user = await User.findById(req.session.userID);
-        await user.courses.pull({_id:req.body.course_id});
+        await user.courses.pull({ _id: req.body.course_id });
         await user.save();
         res.status(200).redirect('/users/dashboard');
-      } catch (error) {
+    } catch (error) {
         res.status(400).json({
             status: 'fail',
             error
