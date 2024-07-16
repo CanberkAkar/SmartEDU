@@ -2,7 +2,7 @@
 const User = require('../models/User');
 const Category = require('../models/Category');
 const Course = require('../models/Course');
-
+const { query, validationResult } = require('express-validator');
 const bcrypt= require('bcrypt');
 
 exports.createUser = async (req, res) => {
@@ -11,10 +11,15 @@ exports.createUser = async (req, res) => {
         //YENİ ELEMANDA 201 DÖNER
         res.status(201).redirect('/login');
     } catch (error) {
-        res.status(400).json({
-            status: 'fail', 
-            error
-        })
+        const errors = validationResult(req);
+        console.log(errors);
+        console.log(errors.array()[0].msg);
+      
+        for (let i = 0; i <errors.array().length; i++) {
+          req.flash("error", `${errors.array()[i].msg}`);
+        }
+        res.status(400).redirect('/register');
+      
     }
 }
 
@@ -26,28 +31,25 @@ exports.loginUser = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(400).json({
-                status: 'fail',
-                message: 'User not found'
-            });
+            req.flash("error", "User Not Match");
+            res.status(400).redirect('/login');
+            //redirect yapmazsan flash çıkmaz
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({
-                status: 'fail',
-                message: 'Incorrect password'
-            });
+            const errors = validationResult(req);
+              req.flash("error", "User Info Not Match");
+              res.status(400).redirect('/login');
+
         }
 
         // USER SESSION
         req.session.userID=user._id;
         res.status(200).redirect('/users/dashboard');
     } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            error: error.message || 'An error occurred'
-        });
+        req.flash("error", "User Not Defined");
+
     }
 };
 
