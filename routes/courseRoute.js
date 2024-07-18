@@ -9,5 +9,5 @@ router.route('/').get(courseController.getAllCourses);
 router.route('/:slug').get(courseController.getCourse);
 router.route('/enroll').post(courseController.enrollCourese);
 router.route('/release').post(courseController.releaseCourese);
-
+router.route('/:slug').delete(courseController.deleteCourse);
 module.exports = router;

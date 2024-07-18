@@ -57,6 +57,7 @@ exports.getAllCourses = async (req, res) => {
     }
 }
 
+
 exports.getCourse = async (req, res) => {
     try {
         const user = await User.findById(req.session.userID);
@@ -106,3 +107,23 @@ exports.releaseCourese = async (req, res) => {
         })
     }
 }
+//REMOTE YERİNE DELETE KULLANMAMIZ GEREKIYOR. FONKSİYONDAN KAYNAKLI
+
+exports.deleteCourse = async (req, res) => {
+    try {
+      const course = await Course.findOneAndDelete({ slug: req.params.slug });
+      if (!course) {
+        req.flash("error", "Kayıt bulunamadı.");
+        return res.status(404).redirect('/users/dashboard');
+      }
+  
+      req.flash("success", `${course.name} başarıyla silindi.`);
+      res.status(200).redirect('/users/dashboard');
+  
+    } catch (error) {
+      console.log('Hata:', error);
+      req.flash("error", "Bir hata oluştu.");
+      res.status(400).redirect('/users/dashboard');
+    }
+  };
+  
