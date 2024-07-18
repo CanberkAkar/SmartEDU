@@ -111,19 +111,35 @@ exports.releaseCourese = async (req, res) => {
 
 exports.deleteCourse = async (req, res) => {
     try {
-      const course = await Course.findOneAndDelete({ slug: req.params.slug });
-      if (!course) {
-        req.flash("error", "Kayıt bulunamadı.");
-        return res.status(404).redirect('/users/dashboard');
-      }
-  
-      req.flash("success", `${course.name} başarıyla silindi.`);
-      res.status(200).redirect('/users/dashboard');
-  
+        const course = await Course.findOneAndDelete({ slug: req.params.slug });
+        if (!course) {
+            req.flash("error", "Kayıt bulunamadı.");
+            return res.status(404).redirect('/users/dashboard');
+        }
+
+        req.flash("success", `${course.name} başarıyla silindi.`);
+        res.status(200).redirect('/users/dashboard');
+
     } catch (error) {
-      console.log('Hata:', error);
-      req.flash("error", "Bir hata oluştu.");
-      res.status(400).redirect('/users/dashboard');
+        console.log('Hata:', error);
+        req.flash("error", "Bir hata oluştu.");
+        res.status(400).redirect('/users/dashboard');
     }
-  };
-  
+};
+
+exports.updateCourse = async (req, res) => {
+    try {
+        const course = await Course.findOne({ slug: req.params.slug });
+        course.name        = req.body.name;
+        course.description = req.body.description;
+        course.category    = req.body.category;
+        course.save();
+
+        res.status(200).redirect('/users/dashboard');
+
+    } catch (error) {
+        console.log('Hata:', error);
+        req.flash("error", "Error.");
+        res.status(400).redirect('/users/dashboard');
+    }
+};
